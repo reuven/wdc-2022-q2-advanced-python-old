@@ -1,0 +1,5802 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "5f062a95",
+   "metadata": {},
+   "source": [
+    "# Agenda: Functions\n",
+    "\n",
+    "1. Defining functions\n",
+    "2. Parameters and arguments\n",
+    "3. Type annotations\n",
+    "4. Scoping (LEGB)\n",
+    "5. Byte codes and function compilation\n",
+    "6. Enclosing functions\n",
+    "7. Dispatch table"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "3c10345b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "int"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'abcd'\n",
+    "x = len(s)\n",
+    "\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "54e87230",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "b4dedb9d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "str"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = s.upper()\n",
+    "\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "5ca44792",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = s.upper"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "68b48ff1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "builtin_function_or_method"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "a8c091d0",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'ABCD'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "6fc6e0c0",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "a: 1\n",
+      "b: 2\n",
+      "c: 3\n"
+     ]
+    }
+   ],
+   "source": [
+    "d = {'a':1, 'b':2, 'c':3}\n",
+    "\n",
+    "for key, value in d.items():\n",
+    "    print(f'{key}: {value}')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "817ba4ae",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'builtin_function_or_method' object is not iterable",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/2797918967.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0md\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m{\u001b[0m\u001b[0;34m'a'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'b'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'c'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;36m3\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 4\u001b[0;31m \u001b[0;32mfor\u001b[0m \u001b[0mkey\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mvalue\u001b[0m \u001b[0;32min\u001b[0m \u001b[0md\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mitems\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      5\u001b[0m     \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34mf'{key}: {value}'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mTypeError\u001b[0m: 'builtin_function_or_method' object is not iterable"
+     ]
+    }
+   ],
+   "source": [
+    "# many people try to do this\n",
+    "d = {'a':1, 'b':2, 'c':3}\n",
+    "\n",
+    "for key, value in d.items:\n",
+    "    print(f'{key}: {value}')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b4b779d5",
+   "metadata": {},
+   "source": [
+    "# Two types of arguments in Python\n",
+    "\n",
+    "- Positional arguments -- assigned to parameters according to their location\n",
+    "- Keyword arguments -- they always look like `name=value`.  Assigned to a parameter via the name."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "d989465d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def hello(name):\n",
+    "    return f'Hello, {name}!'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "bb2207bf",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, Reuven!'"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello('Reuven')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "48dec791",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# parameters: name\n",
+    "# arguments:  'Reuven' (positional)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "b67aa771",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, Reuven!'"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello(name='Reuven')   # keyword\n",
+    "\n",
+    "# parameters:  name\n",
+    "# arguments:   'Reuven'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "b221302f",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "hello() got an unexpected keyword argument 'whatever'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1625167261.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mhello\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mwhatever\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'Reuven'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: hello() got an unexpected keyword argument 'whatever'"
+     ]
+    }
+   ],
+   "source": [
+    "hello(whatever='Reuven')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "bfab613a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "('name',)"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello.__code__.co_varnames"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "ca98c384",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello.__code__.co_argcount"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "937feae5",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, world!'"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello('world')   #  'world' is assigned to name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "f68bdec5",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "hello() missing 1 required positional argument: 'name'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/2674044599.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mhello\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: hello() missing 1 required positional argument: 'name'"
+     ]
+    }
+   ],
+   "source": [
+    "hello()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "72213b9f",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "hello() takes 1 positional argument but 2 were given",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/3083850753.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mhello\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'x'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'y'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: hello() takes 1 positional argument but 2 were given"
+     ]
+    }
+   ],
+   "source": [
+    "hello('x', 'y')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "id": "395d7919",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<function __main__.hello(name)>"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(hello)(hello.__code__, globals())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9246e071",
+   "metadata": {},
+   "source": [
+    "We pronounce `__whatever__` as \"dunder whatever.\"\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "id": "b0df9a0a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['__class__',\n",
+       " '__delattr__',\n",
+       " '__dir__',\n",
+       " '__doc__',\n",
+       " '__eq__',\n",
+       " '__format__',\n",
+       " '__ge__',\n",
+       " '__getattribute__',\n",
+       " '__gt__',\n",
+       " '__hash__',\n",
+       " '__init__',\n",
+       " '__init_subclass__',\n",
+       " '__le__',\n",
+       " '__lt__',\n",
+       " '__ne__',\n",
+       " '__new__',\n",
+       " '__reduce__',\n",
+       " '__reduce_ex__',\n",
+       " '__repr__',\n",
+       " '__setattr__',\n",
+       " '__sizeof__',\n",
+       " '__str__',\n",
+       " '__subclasshook__',\n",
+       " 'co_argcount',\n",
+       " 'co_cellvars',\n",
+       " 'co_code',\n",
+       " 'co_consts',\n",
+       " 'co_filename',\n",
+       " 'co_firstlineno',\n",
+       " 'co_flags',\n",
+       " 'co_freevars',\n",
+       " 'co_kwonlyargcount',\n",
+       " 'co_lines',\n",
+       " 'co_linetable',\n",
+       " 'co_lnotab',\n",
+       " 'co_name',\n",
+       " 'co_names',\n",
+       " 'co_nlocals',\n",
+       " 'co_posonlyargcount',\n",
+       " 'co_stacksize',\n",
+       " 'co_varnames',\n",
+       " 'replace']"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dir(hello.__code__)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "51e677ec",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "b'd\\x01|\\x00\\x9b\\x00d\\x02\\x9d\\x03S\\x00'"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello.__code__.co_code"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "e4d8ff00",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "  2           0 LOAD_CONST               1 ('Hello, ')\n",
+      "              2 LOAD_FAST                0 (name)\n",
+      "              4 FORMAT_VALUE             0\n",
+      "              6 LOAD_CONST               2 ('!')\n",
+      "              8 BUILD_STRING             3\n",
+      "             10 RETURN_VALUE\n"
+     ]
+    }
+   ],
+   "source": [
+    "import dis   # disassembler\n",
+    "\n",
+    "dis.dis(hello)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "d9a9df00",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def hello(name):\n",
+    "    return f'Hello, {name}!'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "id": "b327f65d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(None, 'Hello, ', '!')"
+      ]
+     },
+     "execution_count": 30,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello.__code__.co_consts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "id": "bfb3b1bf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def nothing():\n",
+    "    pass"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "id": "fa414cc2",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "None\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(nothing())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "id": "a490bd5b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "  2           0 LOAD_CONST               0 (None)\n",
+      "              2 RETURN_VALUE\n"
+     ]
+    }
+   ],
+   "source": [
+    "dis.dis(nothing)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "id": "690a5cb7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add(first, second):\n",
+    "    return first + second"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "id": "9c095671",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "15"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add(10, 5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "e80e1b08",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'abcdefgh'"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add('abcd', 'efgh')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "id": "df3cb6d0",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "2"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add.__code__.co_argcount"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "id": "c7ad95be",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "('first', 'second')"
+      ]
+     },
+     "execution_count": 38,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add.__code__.co_varnames"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "39643ddb",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "13"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# keyword arguments?\n",
+    "add(10, second=3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "id": "0446ac4f",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "positional argument follows keyword argument (1099124549.py, line 3)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1099124549.py\"\u001b[0;36m, line \u001b[0;32m3\u001b[0m\n\u001b[0;31m    add(first=10, 3)\u001b[0m\n\u001b[0m                   ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m positional argument follows keyword argument\n"
+     ]
+    }
+   ],
+   "source": [
+    "# in all cases, positional arguments must all come before keyword arguments\n",
+    "\n",
+    "add(first=10, 3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "id": "6600c655",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "AttributeError",
+     "evalue": "readonly attribute",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1170150448.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0madd\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m__code__\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mco_argcount\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m3\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m: readonly attribute"
+     ]
+    }
+   ],
+   "source": [
+    "add.__code__.co_argcount = 3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "id": "20478fca",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def hello(name):\n",
+    "    return f'Hello, {name}'\n",
+    "\n",
+    "def goodbye(name):\n",
+    "    return f'Goodbye, {name}'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "id": "756b42b8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "goodbye.__code__ = hello.__code__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "id": "12c128d0",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, whatever'"
+      ]
+     },
+     "execution_count": 45,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "goodbye('whatever')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 46,
+   "id": "920642fd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import copy\n",
+    "\n",
+    "new_code = copy.copy(hello.__code__)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "id": "41689c75",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<code object hello at 0x10a5c2c30, file \"/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/3296227565.py\", line 1>"
+      ]
+     },
+     "execution_count": 47,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "new_code"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "id": "dd8b270b",
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "ename": "AttributeError",
+     "evalue": "readonly attribute",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/7133865.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mnew_code\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mco_argcount\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m5\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m: readonly attribute"
+     ]
+    }
+   ],
+   "source": [
+    "new_code.co_argcount = 5"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "id": "7b695199",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# default values for parameters\n",
+    "\n",
+    "def add(first, second=5):\n",
+    "    return first + second"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "id": "c0fd41ca",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "13"
+      ]
+     },
+     "execution_count": 50,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# parameters:  first   second\n",
+    "# arguments:    10       3\n",
+    "\n",
+    "add(10, 3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 54,
+   "id": "a718b737",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "15"
+      ]
+     },
+     "execution_count": 54,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# parameters:  first   second\n",
+    "# arguments:     10      5\n",
+    "\n",
+    "add(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "id": "c8f74b9f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "2"
+      ]
+     },
+     "execution_count": 52,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add.__code__.co_argcount"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 53,
+   "id": "7df84135",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(5,)"
+      ]
+     },
+     "execution_count": 53,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add.__defaults__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "id": "e3f1e337",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add(first=3, second=5):\n",
+    "    return first + second"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "id": "a4f6023a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "8"
+      ]
+     },
+     "execution_count": 56,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "id": "172530b6",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "5"
+      ]
+     },
+     "execution_count": 57,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add(second=2)  # keyword argument"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "id": "ae53dc8c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[10, 20, 30, 1]"
+      ]
+     },
+     "execution_count": 58,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def add_one(x=[]):\n",
+    "    x.append(1)\n",
+    "    return x\n",
+    "\n",
+    "mylist = [10, 20, 30]\n",
+    "add_one(mylist)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "id": "e9186672",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[10, 20, 30, 1]"
+      ]
+     },
+     "execution_count": 59,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mylist"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "id": "89ba9404",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "4481656720\n"
+     ]
+    }
+   ],
+   "source": [
+    "def set_it(y):\n",
+    "    y = 100_000\n",
+    "    print(id(y))\n",
+    "    return y\n",
+    "\n",
+    "x = 100\n",
+    "x = set_it(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "id": "9d53d69e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4481656720"
+      ]
+     },
+     "execution_count": 63,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "id(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "id": "2f218055",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1]"
+      ]
+     },
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def add_one(x=[]):\n",
+    "    x.append(1)\n",
+    "    return x\n",
+    "\n",
+    "add_one()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "id": "4eb52826",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1, 1]"
+      ]
+     },
+     "execution_count": 65,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "id": "623d996d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1, 1, 1]"
+      ]
+     },
+     "execution_count": 66,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "id": "3e9e916d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add_one(x=[]):  # mutable defaults are BAD!\n",
+    "    x.append(1)\n",
+    "    return x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 68,
+   "id": "51e31a66",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "([],)"
+      ]
+     },
+     "execution_count": 68,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one.__defaults__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "id": "f42264dc",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1]"
+      ]
+     },
+     "execution_count": 69,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# parameters: x\n",
+    "# arguments: __defaults__[0]\n",
+    "\n",
+    "add_one() "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 70,
+   "id": "b5894e9a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "([1],)"
+      ]
+     },
+     "execution_count": 70,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one.__defaults__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "id": "1c6dc977",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1, 1]"
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 72,
+   "id": "4c1d415e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1, 1, 1]"
+      ]
+     },
+     "execution_count": 72,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "12ec54e9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "([1, 1, 1],)"
+      ]
+     },
+     "execution_count": 73,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "add_one.__defaults__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4382770f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add_one(x=None):  \n",
+    "    if x is None:\n",
+    "        x = []\n",
+    "    \n",
+    "    x.append(1)\n",
+    "    return x"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ef32d51a",
+   "metadata": {},
+   "source": [
+    "# Parameter types\n",
+    "\n",
+    "1. Mandatory parameters (positional or keyword)\n",
+    "2. Optional parameters, with defaults (positional or keyword)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 74,
+   "id": "8d2ae40b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def mysum(numbers):\n",
+    "    total = 0\n",
+    "    \n",
+    "    for one_number in numbers:\n",
+    "        total += one_number\n",
+    "        \n",
+    "    return one_number"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "id": "4333297e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "30"
+      ]
+     },
+     "execution_count": 75,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mysum([10, 20, 30])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "8e8fa3b3",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "mysum() takes 1 positional argument but 3 were given",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1367105100.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mmysum\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m10\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m20\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m30\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: mysum() takes 1 positional argument but 3 were given"
+     ]
+    }
+   ],
+   "source": [
+    "mysum(10, 20, 30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "id": "a8cebe04",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# *args (\"splat args\")\n",
+    "# the parameter with a * gets all of the positional arguments that no one else wanted\n",
+    "# it'll always be a tuple\n",
+    "\n",
+    "def mysum(*numbers):  \n",
+    "    print(f'{numbers=}')\n",
+    "    total = 0\n",
+    "    \n",
+    "    for one_number in numbers:\n",
+    "        total += one_number\n",
+    "\n",
+    "    return total"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 78,
+   "id": "b5f09f93",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "numbers=(10, 20, 30)\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "60"
+      ]
+     },
+     "execution_count": 78,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mysum(10, 20, 30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 79,
+   "id": "6b234466",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def myfunc(a, b, *args):\n",
+    "    return f'{a=}, {b=}, {args=}'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 80,
+   "id": "9179d062",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'a=10, b=20, args=(30, 40, 50)'"
+      ]
+     },
+     "execution_count": 80,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "myfunc(10, 20, 30, 40, 50)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cdc90e8f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "65358145",
+   "metadata": {},
+   "source": [
+    "# Parameter types\n",
+    "\n",
+    "1. Mandatory parameters (positional or keyword)\n",
+    "2. Optional parameters, with defaults (positional or keyword)\n",
+    "3. `*args`, a tuple with all leftover positional arguments"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b3d84289",
+   "metadata": {},
+   "source": [
+    "# Exercise: `all_lines`\n",
+    "\n",
+    "1. Write a function, `all_lines`, that takes:\n",
+    "    - One mandatory argument, a string with the filename into which we'll write\n",
+    "    - Any number of additional positional arguments, filenames from which we'll read\n",
+    "2. The function should write all of the lines from the input files into the output file    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 81,
+   "id": "03be4827",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def all_lines(outfilename, *args):\n",
+    "    with open(outfilename, 'w') as outfile:\n",
+    "        for one_filename in args:\n",
+    "            for one_line in open(one_filename):\n",
+    "                outfile.write(one_line)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 82,
+   "id": "cc677b1a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "WDC-2022-05May-17.html\t WDC-2022-05May-19.ipynb   wdc-2022-05May-17.zip\r\n",
+      "WDC-2022-05May-17.ipynb  python-workout-cover.png\r\n"
+     ]
+    }
+   ],
+   "source": [
+    "!ls"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 83,
+   "id": "a42a4ea8",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "FileNotFoundError",
+     "evalue": "[Errno 2] No such file or directory: 'WDC-2022.05May-17.html'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/3243853286.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mall_lines\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'outfile.txt'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'WDC-2022.05May-17.html'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'WDC-2022.05May-17.ipynb'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1833066642.py\u001b[0m in \u001b[0;36mall_lines\u001b[0;34m(outfilename, *args)\u001b[0m\n\u001b[1;32m      2\u001b[0m     \u001b[0;32mwith\u001b[0m \u001b[0mopen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0moutfilename\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'w'\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0moutfile\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m         \u001b[0;32mfor\u001b[0m \u001b[0mone_filename\u001b[0m \u001b[0;32min\u001b[0m \u001b[0margs\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 4\u001b[0;31m             \u001b[0;32mfor\u001b[0m \u001b[0mone_line\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mopen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mone_filename\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      5\u001b[0m                 \u001b[0moutfile\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwrite\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mone_line\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mFileNotFoundError\u001b[0m: [Errno 2] No such file or directory: 'WDC-2022.05May-17.html'"
+     ]
+    }
+   ],
+   "source": [
+    "all_lines('outfile.txt', 'WDC-2022.05May-17.html', 'WDC-2022.05May-17.ipynb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 84,
+   "id": "a62072e3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def all_lines(outfilename, *args):\n",
+    "    with open(outfilename, 'w') as outfile:\n",
+    "        for one_filename in args:\n",
+    "            f = open(one_filename)\n",
+    "            outfile.write(f.read())   # works, if you have enough memory"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7adc5b14",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def all_lines(outfilename, *args):\n",
+    "    with open(outfilename, 'w') as outfile:\n",
+    "        for one_filename in args:\n",
+    "            f = open(one_filename)\n",
+    "            outfile.writelines(f.readlines())     # works, if you have EVEN MORE memory than using f.read()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "id": "f3f2bf4e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def all_lines(outfilename, *args):\n",
+    "    print(f'{outfilename=}, {args=}')\n",
+    "    with open(outfilename, 'w') as outfile:\n",
+    "        for one_filename in args:\n",
+    "            for one_line in open(one_filename):  \n",
+    "                outfile.write(one_line)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "77f64cb5",
+   "metadata": {},
+   "source": [
+    "# Opening files (for writing)\n",
+    "\n",
+    "- `open(filename, 'w')` -- open for writing, erase any previous content\n",
+    "- `open(filename, 'a')` -- open for writing at the end, appending to previous content\n",
+    "- `open(filename, 'x')` -- open for writing, but only if it's a new file -- exception if the file exists"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "id": "38f8cf45",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['WDC-2022-05May-19.ipynb', 'WDC-2022-05May-17.ipynb']"
+      ]
+     },
+     "execution_count": 87,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import glob\n",
+    "glob.glob('*.ipynb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "id": "98b6e679",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "outfilename='output.txt', args=(['WDC-2022-05May-19.ipynb', 'WDC-2022-05May-17.ipynb'],)\n"
+     ]
+    },
+    {
+     "ename": "TypeError",
+     "evalue": "expected str, bytes or os.PathLike object, not list",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/1813262992.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mall_lines\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'output.txt'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mglob\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mglob\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'*.ipynb'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_10064/771916276.py\u001b[0m in \u001b[0;36mall_lines\u001b[0;34m(outfilename, *args)\u001b[0m\n\u001b[1;32m      3\u001b[0m     \u001b[0;32mwith\u001b[0m \u001b[0mopen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0moutfilename\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'w'\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0moutfile\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m         \u001b[0;32mfor\u001b[0m \u001b[0mone_filename\u001b[0m \u001b[0;32min\u001b[0m \u001b[0margs\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m             \u001b[0;32mfor\u001b[0m \u001b[0mone_line\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mopen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mone_filename\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      6\u001b[0m                 \u001b[0moutfile\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwrite\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mone_line\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mTypeError\u001b[0m: expected str, bytes or os.PathLike object, not list"
+     ]
+    }
+   ],
+   "source": [
+    "all_lines('output.txt', glob.glob('*.ipynb'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6ec49052",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Syllabus\n",
+    "\n",
+    "1. Data structures\n",
+    "    - Basic data structures\n",
+    "    - `namedtuple`\n",
+    "    - Dictionaries variations: `OrderDict`, `defaultdict`, `Counter`\n",
+    "2. Functions\n",
+    "    - What happens when we define a function?\n",
+    "    - Byte codes and function objects\n",
+    "    - Scoping\n",
+    "    - Enclosing/nested functions\n",
+    "    - Dispatch tables\n",
+    "3. Functional programming\n",
+    "    - Comprehensions\n",
+    "    - Passing functions as arguments to other functions\n",
+    "    - `lambda`\n",
+    "4. Modules\n",
+    "5. Objects\n",
+    "    - Classes\n",
+    "    - Instances\n",
+    "    - Methods\n",
+    "    - Attributes (attribute search with ICPO)\n",
+    "    - Inheritance\n",
+    "    - Operator overloading\n",
+    "    - Properties\n",
+    "    - Descriptors\n",
+    "6. Iterators and generators\n",
+    "    - Making classes iterable\n",
+    "    - Generator functions\n",
+    "    - Generator expressions\n",
+    "7. Decorators\n",
+    "8. Concurrency\n",
+    "    - Threading\n",
+    "    - Multiprocessing"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Data structures"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "int"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 100\n",
+    "y = 200\n",
+    "\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "int"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "NoneType"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = None\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = None\n",
+    "y = None\n",
+    "\n",
+    "# I want to know if x and y are the same\n",
+    "\n",
+    "x == y     # not Pythonic"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is None   # Pythonic "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "y is None"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# None is a singleton -- how can I know?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4452465200"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# every object has an ID number, which we can get by calling id\n",
+    "id(None)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "id(x) == id(y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "id(x) == id(None)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is None   # same as id(x) == id(None)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'0x109633a30'"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hex(id(x))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 100\n",
+    "y = 100\n",
+    "\n",
+    "x == y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 1000\n",
+    "y = 1000\n",
+    "\n",
+    "x == y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "False"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 'abcd'\n",
+    "y = 'abcd'\n",
+    "\n",
+    "x == y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 'abcd' * 100_000\n",
+    "y = 'abcd' * 100_000\n",
+    "\n",
+    "x == y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "False"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 'a.b'\n",
+    "y = 'a.b'\n",
+    "\n",
+    "x == y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "False"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x is y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'__name__': '__main__',\n",
+       " '__doc__': 'Automatically created module for IPython interactive environment',\n",
+       " '__package__': None,\n",
+       " '__loader__': None,\n",
+       " '__spec__': None,\n",
+       " '__builtin__': <module 'builtins' (built-in)>,\n",
+       " '__builtins__': <module 'builtins' (built-in)>,\n",
+       " '_ih': ['',\n",
+       "  'x = 100\\ny = 200\\n\\ntype(x)',\n",
+       "  'type(y)',\n",
+       "  'x = None\\ntype(x)',\n",
+       "  'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y',\n",
+       "  'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y     # not Pythonic',\n",
+       "  'x is y    # Pythonic ',\n",
+       "  'x is None   # Pythonic ',\n",
+       "  'y is None',\n",
+       "  '# None is a singleton -- how can I know?',\n",
+       "  '# every object has an ID number, which we can get by calling id\\nid(None)',\n",
+       "  'id(x) == id(y)',\n",
+       "  'id(x) == id(None)',\n",
+       "  'x is None   # same as id(x) == id(None)',\n",
+       "  'hex(id(x))',\n",
+       "  'x = 100\\ny = 100\\n\\nx == y',\n",
+       "  'x is y',\n",
+       "  'x = 1000\\ny = 1000\\n\\nx == y',\n",
+       "  'x is y',\n",
+       "  \"x = 'abcd'\\ny = 'abcd'\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  \"x = 'abcd' * 100_000\\ny = 'abcd' * 100_000\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  \"x = 'a.b'\\ny = 'a.b'\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  'globals()'],\n",
+       " '_oh': {1: int,\n",
+       "  2: int,\n",
+       "  3: NoneType,\n",
+       "  4: True,\n",
+       "  5: True,\n",
+       "  6: True,\n",
+       "  7: True,\n",
+       "  8: True,\n",
+       "  10: 4452465200,\n",
+       "  11: True,\n",
+       "  12: True,\n",
+       "  13: True,\n",
+       "  14: '0x109633a30',\n",
+       "  15: True,\n",
+       "  16: True,\n",
+       "  17: True,\n",
+       "  18: False,\n",
+       "  19: True,\n",
+       "  20: True,\n",
+       "  21: True,\n",
+       "  22: False,\n",
+       "  23: True,\n",
+       "  24: False},\n",
+       " '_dh': ['/Users/reuven/Courses/Current/WDC-2022-q2-advanced-python'],\n",
+       " 'In': ['',\n",
+       "  'x = 100\\ny = 200\\n\\ntype(x)',\n",
+       "  'type(y)',\n",
+       "  'x = None\\ntype(x)',\n",
+       "  'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y',\n",
+       "  'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y     # not Pythonic',\n",
+       "  'x is y    # Pythonic ',\n",
+       "  'x is None   # Pythonic ',\n",
+       "  'y is None',\n",
+       "  '# None is a singleton -- how can I know?',\n",
+       "  '# every object has an ID number, which we can get by calling id\\nid(None)',\n",
+       "  'id(x) == id(y)',\n",
+       "  'id(x) == id(None)',\n",
+       "  'x is None   # same as id(x) == id(None)',\n",
+       "  'hex(id(x))',\n",
+       "  'x = 100\\ny = 100\\n\\nx == y',\n",
+       "  'x is y',\n",
+       "  'x = 1000\\ny = 1000\\n\\nx == y',\n",
+       "  'x is y',\n",
+       "  \"x = 'abcd'\\ny = 'abcd'\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  \"x = 'abcd' * 100_000\\ny = 'abcd' * 100_000\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  \"x = 'a.b'\\ny = 'a.b'\\n\\nx == y\",\n",
+       "  'x is y',\n",
+       "  'globals()'],\n",
+       " 'Out': {1: int,\n",
+       "  2: int,\n",
+       "  3: NoneType,\n",
+       "  4: True,\n",
+       "  5: True,\n",
+       "  6: True,\n",
+       "  7: True,\n",
+       "  8: True,\n",
+       "  10: 4452465200,\n",
+       "  11: True,\n",
+       "  12: True,\n",
+       "  13: True,\n",
+       "  14: '0x109633a30',\n",
+       "  15: True,\n",
+       "  16: True,\n",
+       "  17: True,\n",
+       "  18: False,\n",
+       "  19: True,\n",
+       "  20: True,\n",
+       "  21: True,\n",
+       "  22: False,\n",
+       "  23: True,\n",
+       "  24: False},\n",
+       " 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x10bb0f070>>,\n",
+       " 'exit': <IPython.core.autocall.ZMQExitAutocall at 0x10bb0fa30>,\n",
+       " 'quit': <IPython.core.autocall.ZMQExitAutocall at 0x10bb0fa30>,\n",
+       " '_': False,\n",
+       " '__': True,\n",
+       " '___': False,\n",
+       " '_i': 'x is y',\n",
+       " '_ii': \"x = 'a.b'\\ny = 'a.b'\\n\\nx == y\",\n",
+       " '_iii': 'x is y',\n",
+       " '_i1': 'x = 100\\ny = 200\\n\\ntype(x)',\n",
+       " 'x': 'a.b',\n",
+       " 'y': 'a.b',\n",
+       " '_1': int,\n",
+       " '_i2': 'type(y)',\n",
+       " '_2': int,\n",
+       " '_i3': 'x = None\\ntype(x)',\n",
+       " '_3': NoneType,\n",
+       " '_i4': 'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y',\n",
+       " '_4': True,\n",
+       " '_i5': 'x = None\\ny = None\\n\\n# I want to know if x and y are the same\\n\\nx == y     # not Pythonic',\n",
+       " '_5': True,\n",
+       " '_i6': 'x is y    # Pythonic ',\n",
+       " '_6': True,\n",
+       " '_i7': 'x is None   # Pythonic ',\n",
+       " '_7': True,\n",
+       " '_i8': 'y is None',\n",
+       " '_8': True,\n",
+       " '_i9': '# None is a singleton -- how can I know?',\n",
+       " '_i10': '# every object has an ID number, which we can get by calling id\\nid(None)',\n",
+       " '_10': 4452465200,\n",
+       " '_i11': 'id(x) == id(y)',\n",
+       " '_11': True,\n",
+       " '_i12': 'id(x) == id(None)',\n",
+       " '_12': True,\n",
+       " '_i13': 'x is None   # same as id(x) == id(None)',\n",
+       " '_13': True,\n",
+       " '_i14': 'hex(id(x))',\n",
+       " '_14': '0x109633a30',\n",
+       " '_i15': 'x = 100\\ny = 100\\n\\nx == y',\n",
+       " '_15': True,\n",
+       " '_i16': 'x is y',\n",
+       " '_16': True,\n",
+       " '_i17': 'x = 1000\\ny = 1000\\n\\nx == y',\n",
+       " '_17': True,\n",
+       " '_i18': 'x is y',\n",
+       " '_18': False,\n",
+       " '_i19': \"x = 'abcd'\\ny = 'abcd'\\n\\nx == y\",\n",
+       " '_19': True,\n",
+       " '_i20': 'x is y',\n",
+       " '_20': True,\n",
+       " '_i21': \"x = 'abcd' * 100_000\\ny = 'abcd' * 100_000\\n\\nx == y\",\n",
+       " '_21': True,\n",
+       " '_i22': 'x is y',\n",
+       " '_22': False,\n",
+       " '_i23': \"x = 'a.b'\\ny = 'a.b'\\n\\nx == y\",\n",
+       " '_23': True,\n",
+       " '_i24': 'x is y',\n",
+       " '_24': False,\n",
+       " '_i25': 'globals()'}"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "globals()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "24"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# how big is 0?\n",
+    "\n",
+    "import sys\n",
+    "\n",
+    "x = 0\n",
+    "sys.getsizeof(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "28"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 1\n",
+    "sys.getsizeof(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = 100_000_000_000_000"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "32"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "sys.getsizeof(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "float"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = 10.5\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.30000000000000004"
+      ]
+     },
+     "execution_count": 33,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "0.1 + 0.2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.3"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "round(0.1 + 0.2, 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Decimal('0.3')"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# BCD -- binary coded decimals\n",
+    "# \n",
+    "\n",
+    "# 2 + 3\n",
+    "# 10 + 11\n",
+    "\n",
+    "from decimal import Decimal\n",
+    "\n",
+    "x = Decimal('0.1')\n",
+    "y = Decimal('0.2')\n",
+    "\n",
+    "x + y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.3"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "float(x + y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Decimal('0.3000000000000000166533453694')"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = Decimal(0.1)\n",
+    "y = Decimal(0.2)\n",
+    "\n",
+    "x + y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Decimal('0.1000000000000000055511151231257827021181583404541015625')"
+      ]
+     },
+     "execution_count": 38,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Decimal('0.200000000000000011102230246251565404236316680908203125')"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "y"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Strings"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "26"
+      ]
+     },
+     "execution_count": 40,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'abcdefghijklmnopqrstuvwxyz'\n",
+    "len(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'f'"
+      ]
+     },
+     "execution_count": 41,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'k'"
+      ]
+     },
+     "execution_count": 42,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[10]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'a'"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'z'"
+      ]
+     },
+     "execution_count": 44,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[25]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'z'"
+      ]
+     },
+     "execution_count": 45,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# negative indexes ... from the right\n",
+    "s[-1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 46,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'y'"
+      ]
+     },
+     "execution_count": 46,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[-2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'x'"
+      ]
+     },
+     "execution_count": 47,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[-3]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'klmnopqrst'"
+      ]
+     },
+     "execution_count": 48,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# slices\n",
+    "\n",
+    "s[10:20]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'abcdefghijklmnopqrst'"
+      ]
+     },
+     "execution_count": 49,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[:20]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'uvwxyz'"
+      ]
+     },
+     "execution_count": 50,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[20:]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'knqt'"
+      ]
+     },
+     "execution_count": 51,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s[10:20:3]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "49"
+      ]
+     },
+     "execution_count": 52,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = ''\n",
+    "sys.getsizeof(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 53,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "59"
+      ]
+     },
+     "execution_count": 53,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'abcdefghij'\n",
+    "sys.getsizeof(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 54,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'str' object does not support item assignment",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/2360199149.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# strings are immutable\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0ms\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m10\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m'!'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: 'str' object does not support item assignment"
+     ]
+    }
+   ],
+   "source": [
+    "# strings are immutable\n",
+    "s[10] = '!'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# sequences -- strings, list, tuple"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def hello(name):\n",
+    "    return f'Hello, {name}!'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, world!'"
+      ]
+     },
+     "execution_count": 57,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello('world')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, 5!'"
+      ]
+     },
+     "execution_count": 58,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, [10, 20, 30]!'"
+      ]
+     },
+     "execution_count": 59,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello([10, 20, 30])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, <function hello at 0x10d093b50>!'"
+      ]
+     },
+     "execution_count": 60,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello(hello)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# how can I make sure that only strings are passed?\n",
+    "\n",
+    "# type hints?\n",
+    "def hello(name:str):\n",
+    "    return f'Hello, {name}!'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, world!'"
+      ]
+     },
+     "execution_count": 62,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello('world')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, 5!'"
+      ]
+     },
+     "execution_count": 63,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hello, [10, 20, 30]!'"
+      ]
+     },
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "hello([10, 20, 30])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Exercise: `firstlast`\n",
+    "\n",
+    "1. Write a function that takes one argument, a sequence (string, list, tuple).\n",
+    "2. The function should return the same type it got, but with two elements -- the first and final elements from the input data.\n",
+    "3. An empty sequence will be returned empty.  And something with one element will be returned with that element doubled.\n",
+    "\n",
+    "Example:\n",
+    "\n",
+    "```python\n",
+    "firstlast('abcde')           # 'ae'\n",
+    "firstlast([10, 20, 30])      # [10, 30]\n",
+    "firstlast((100, 200, 300)))  # (100, 300)\n",
+    "firstlast('')                # ''\n",
+    "firstlast([10])              # [10, 10]\n",
+    "\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "ae\n"
+     ]
+    }
+   ],
+   "source": [
+    "def firstlast(s):\n",
+    "    if not s:\n",
+    "        return s\n",
+    "    \n",
+    "    return s[0] + s[-1]\n",
+    "\n",
+    "print(firstlast('abcde'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "60\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(firstlast([10, 20, 30, 40, 50]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "400\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(firstlast((100, 200, 300)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 70,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "ae\n",
+      "[10, 50]\n",
+      "(100, 300)\n"
+     ]
+    }
+   ],
+   "source": [
+    "def firstlast(s):\n",
+    "    if not s:\n",
+    "        return s\n",
+    "    \n",
+    "    return s[:1] + s[-1:]\n",
+    "\n",
+    "print(firstlast('abcde'))\n",
+    "print(firstlast([10, 20, 30, 40, 50]))\n",
+    "print(firstlast((100, 200, 300)))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Strings contain Unicode characters"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "str"
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'abcde'\n",
+    "type(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 72,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "5"
+      ]
+     },
+     "execution_count": 72,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "str"
+      ]
+     },
+     "execution_count": 73,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'שלום'\n",
+    "type(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4"
+      ]
+     },
+     "execution_count": 75,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(s)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "b'\\xd7\\xa9\\xd7\\x9c\\xd7\\x95\\xd7\\x9d'"
+      ]
+     },
+     "execution_count": 77,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# turn a string into bytes\n",
+    "\n",
+    "s.encode()   # returns a byte string"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 78,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "215"
+      ]
+     },
+     "execution_count": 78,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s.encode()[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 79,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "b'\\xd7\\xa9\\xd7\\x9c\\xd7\\x95\\xd7\\x9d'"
+      ]
+     },
+     "execution_count": 79,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "b = s.encode()\n",
+    "b"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 80,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'שלום'"
+      ]
+     },
+     "execution_count": 80,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "b.decode()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 81,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "b'abcde'"
+      ]
+     },
+     "execution_count": 81,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "b'abcde'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 82,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "bytes can only contain ASCII literal characters (2953791869.py, line 1)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/2953791869.py\"\u001b[0;36m, line \u001b[0;32m1\u001b[0m\n\u001b[0;31m    b'שלום'\u001b[0m\n\u001b[0m           ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m bytes can only contain ASCII literal characters\n"
+     ]
+    }
+   ],
+   "source": [
+    "b'שלום'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 83,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "list"
+      ]
+     },
+     "execution_count": 83,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Lists\n",
+    "\n",
+    "x = [10, 20, 30, 40, 50]\n",
+    "type(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 84,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[10, 20, 30, 40, 50, 60]"
+      ]
+     },
+     "execution_count": 84,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x.append(60)\n",
+    "x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 85,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "i=0, 56\n",
+      "i=1, 88\n",
+      "i=2, 88\n",
+      "i=3, 88\n",
+      "i=4, 88\n",
+      "i=5, 120\n",
+      "i=6, 120\n",
+      "i=7, 120\n",
+      "i=8, 120\n",
+      "i=9, 184\n",
+      "i=10, 184\n",
+      "i=11, 184\n",
+      "i=12, 184\n",
+      "i=13, 184\n",
+      "i=14, 184\n",
+      "i=15, 184\n",
+      "i=16, 184\n",
+      "i=17, 248\n",
+      "i=18, 248\n",
+      "i=19, 248\n",
+      "i=20, 248\n",
+      "i=21, 248\n",
+      "i=22, 248\n",
+      "i=23, 248\n",
+      "i=24, 248\n",
+      "i=25, 312\n",
+      "i=26, 312\n",
+      "i=27, 312\n",
+      "i=28, 312\n",
+      "i=29, 312\n",
+      "i=30, 312\n",
+      "i=31, 312\n",
+      "i=32, 312\n",
+      "i=33, 376\n",
+      "i=34, 376\n"
+     ]
+    }
+   ],
+   "source": [
+    "output = []\n",
+    "\n",
+    "for i in range(35):\n",
+    "    print(f'{i=}, {sys.getsizeof(output)}')\n",
+    "    output.append(i)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 86,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "tuple"
+      ]
+     },
+     "execution_count": 86,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = (10, 20, 30)\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "tuple"
+      ]
+     },
+     "execution_count": 87,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = (10, 20)\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 88,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "int"
+      ]
+     },
+     "execution_count": 88,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = (10)   # here, t is 10\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "tuple"
+      ]
+     },
+     "execution_count": 90,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = (10,)   # one-element tuple\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "tuple"
+      ]
+     },
+     "execution_count": 89,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = ()\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "610"
+      ]
+     },
+     "execution_count": 91,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "10 + 20 * 30"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "900"
+      ]
+     },
+     "execution_count": 92,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# add first? Use parentheses\n",
+    "(10 + 20) * 30"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 93,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "tuple"
+      ]
+     },
+     "execution_count": 93,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t = ([10, 20, 30],\n",
+    "     [40, 50, 60])\n",
+    "\n",
+    "type(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 94,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "([10, 20, 30, 35], [40, 50, 60])"
+      ]
+     },
+     "execution_count": 94,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t[0].append(35)\n",
+    "t"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 95,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'tuple' object does not support item assignment",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/553113500.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mt\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m+=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0;36m36\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m37\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m38\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: 'tuple' object does not support item assignment"
+     ]
+    }
+   ],
+   "source": [
+    "t[0] += [36, 37, 38]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "([10, 20, 30, 35, 36, 37, 38], [40, 50, 60])"
+      ]
+     },
+     "execution_count": 96,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "t"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Next up\n",
+    "\n",
+    "1. Files\n",
+    "2. `namedtuple`\n",
+    "3. Dictionaries\n",
+    "4. Variations on dicts\n",
+    "\n",
+    "Resume at 15:15"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "3 16 3 76 71 18 2 70 18 3 59 50 54 72 62 64 70 61 71 70 70 72 56 66 62 67 52 63 60 69 58 50 50 54 66 67 59 63 64 61 62 61 62 61 55 55 74 53 65 65 55 56 50 56 88 66 61 70 81 65 62 56 75 65 54 64 75 72 85 72 67 53 55 69 77 74 94 85 97 73 84 68 71 70 63 55 82 74 64 66 76 55 78 80 56 63 82 76 63 55 69 61 99 73 55 63 79 100 57 83 62 77 104 55 67 92 89 60 62 51 74 75 53 "
+     ]
+    }
+   ],
+   "source": [
+    "for one_line in open('/etc/passwd'):\n",
+    "    print(len(one_line), end=' ')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 98,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "3 16 3 76 71 18 2 70 18 3 59 50 54 72 62 64 70 61 71 70 70 72 56 66 62 67 52 63 60 69 58 50 50 54 66 67 59 63 64 61 62 61 62 61 55 55 74 53 65 65 55 56 50 56 88 66 61 70 81 65 62 56 75 65 54 64 75 72 85 72 67 53 55 69 77 74 94 85 97 73 84 68 71 70 63 55 82 74 64 66 76 55 78 80 56 63 82 76 63 55 69 61 99 73 55 63 79 100 57 83 62 77 104 55 67 92 89 60 62 51 74 75 53 "
+     ]
+    }
+   ],
+   "source": [
+    "with open('/etc/passwd') as f:\n",
+    "    for one_line in f:\n",
+    "        print(len(one_line), end=' ')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 99,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "UnicodeDecodeError",
+     "evalue": "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mUnicodeDecodeError\u001b[0m                        Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/974147926.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;32mwith\u001b[0m \u001b[0mopen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'python-workout-cover.png'\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m     \u001b[0;32mfor\u001b[0m \u001b[0mone_line\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m         \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mlen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mone_line\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mend\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m' '\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/Cellar/python@3.10/3.10.4/Frameworks/Python.framework/Versions/3.10/lib/python3.10/codecs.py\u001b[0m in \u001b[0;36mdecode\u001b[0;34m(self, input, final)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0;31m# decode input (taking the buffer into account)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m         \u001b[0mdata\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mbuffer\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0minput\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0;34m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mconsumed\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_buffer_decode\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdata\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0merrors\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mfinal\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m         \u001b[0;31m# keep undecoded input until the next call\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mbuffer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mdata\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mconsumed\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mUnicodeDecodeError\u001b[0m: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte"
+     ]
+    }
+   ],
+   "source": [
+    "with open('python-workout-cover.png') as f:\n",
+    "    for one_line in f:\n",
+    "        print(len(one_line), end=' ')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 101,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n",
+      "<class 'bytes'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "# open in binary mode\n",
+    "\n",
+    "with open('python-workout-cover.png', 'rb') as f:\n",
+    "    for one_chunk in f:\n",
+    "        print(type(one_chunk))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 102,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "42497\n"
+     ]
+    }
+   ],
+   "source": [
+    "# there are no \"lines\" in a binary file\n",
+    "# so... how do we read from it?\n",
+    "\n",
+    "with open('python-workout-cover.png', 'rb') as f:\n",
+    "    print(len(f.read()))    # not a good idea"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 104,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "total=42497\n"
+     ]
+    }
+   ],
+   "source": [
+    "with open('python-workout-cover.png', 'rb') as f:\n",
+    "    total = 0\n",
+    "    while True:\n",
+    "        b = f.read(2048)   # read up to 2,048 bytes each time\n",
+    "        \n",
+    "        if not b:          # did we get an empty bytestring? stop\n",
+    "            break\n",
+    "            \n",
+    "        total += len(b)\n",
+    "        \n",
+    "print(f'{total=}')        \n",
+    "        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 105,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# person with first, last, and shoesize\n",
+    "\n",
+    "person = ('Reuven', 'Lerner', 46)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 107,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Reuven'"
+      ]
+     },
+     "execution_count": 107,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "person[0]   # first name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 108,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Lerner'"
+      ]
+     },
+     "execution_count": 108,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "person[1]   # last name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 109,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "46"
+      ]
+     },
+     "execution_count": 109,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "person[2]  # shoe size"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 110,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# using namedtuple, how would this look?\n",
+    "\n",
+    "from collections import namedtuple\n",
+    "\n",
+    "# create a new class, Person!\n",
+    "Person = namedtuple('Person', 'first last shoesize')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 111,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "type"
+      ]
+     },
+     "execution_count": 111,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(Person)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 112,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'str'"
+      ]
+     },
+     "execution_count": 112,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "str.__name__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 113,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'list'"
+      ]
+     },
+     "execution_count": 113,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "list.__name__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Person'"
+      ]
+     },
+     "execution_count": 114,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Person.__name__"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 115,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p = Person('Reuven', 'Lerner', 46)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Reuven'"
+      ]
+     },
+     "execution_count": 116,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 117,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Lerner'"
+      ]
+     },
+     "execution_count": 117,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p[1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 118,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "46"
+      ]
+     },
+     "execution_count": 118,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p[2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 119,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Reuven'"
+      ]
+     },
+     "execution_count": 119,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p.first"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Lerner'"
+      ]
+     },
+     "execution_count": 120,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p.last"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 121,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "46"
+      ]
+     },
+     "execution_count": 121,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "p.shoesize"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 122,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "AttributeError",
+     "evalue": "can't set attribute",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/3043903960.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfirst\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m'asdfasfdsas'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m: can't set attribute"
+     ]
+    }
+   ],
+   "source": [
+    "p.first = 'asdfasfdsas'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 124,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Person(first='asdfafaf', last='Lerner', shoesize=46)"
+      ]
+     },
+     "execution_count": 124,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# _replace creates a new namedtuple with the stated fields changed\n",
+    "\n",
+    "p._replace(first='asdfafaf')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Exercise: Bookstore\n",
+    "\n",
+    "1. Create a `Book` class, using `namedtuple`, with the attributes: `title`, `author`, `price`.\n",
+    "2. Create an `inventory` list, containing 3-4 instances of `Book`.\n",
+    "3. Ask the user, repeatedly, what book they want to buy.\n",
+    "    - If they give us an empty string, then exit from the loop and ask how much they owe.\n",
+    "    - If the book's name exists, then print the price and updated total, and other facts about the book.\n",
+    "    - If the book's name doesn't exist, then tell them so\n",
+    "4. When the loop exits, print the total.    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 128,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "invalid syntax. Maybe you meant '==' or ':=' instead of '='? (2546635498.py, line 14)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/2546635498.py\"\u001b[0;36m, line \u001b[0;32m14\u001b[0m\n\u001b[0;31m    while look_for = input('Enter title: ').strip():\u001b[0m\n\u001b[0m          ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax. Maybe you meant '==' or ':=' instead of '='?\n"
+     ]
+    }
+   ],
+   "source": [
+    "from collections import namedtuple\n",
+    "\n",
+    "Book = namedtuple('Book', 'title author price')\n",
+    "# Book = namedtuple('Book', ['title', 'author',  'price'])\n",
+    "\n",
+    "b1 = Book('title1', 'author1', 100)\n",
+    "b2 = Book('title2', 'author1', 125)\n",
+    "b3 = Book('title3', 'author2', 60)\n",
+    "b4 = Book('title4', 'author2', 75)\n",
+    "\n",
+    "inventory = [b1, b2, b3, b4]\n",
+    "total = 0\n",
+    "\n",
+    "# assignment expression operator :=\n",
+    "while look_for := input('Enter title: ').strip():\n",
+    "    \n",
+    "    for one_book in inventory:\n",
+    "        if one_book.title == look_for:\n",
+    "            print(f'Found {look_for}, author {one_book.author}, price {one_book.price}')\n",
+    "            total += one_book.price\n",
+    "            print(f'\\tTotal is now {total}')\n",
+    "            break\n",
+    "    else:\n",
+    "        print(f'We do not carry {look_for}')\n",
+    "        \n",
+    "print(f'{total=}')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 129,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# := assignment\n",
+    "# = comparison"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Dictionaries"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 130,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1"
+      ]
+     },
+     "execution_count": 130,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d = {'a':1, 'b':2, 'c':3}\n",
+    "\n",
+    "d['a']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 131,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "KeyError",
+     "evalue": "'x'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/2324463119.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0md\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'x'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mKeyError\u001b[0m: 'x'"
+     ]
+    }
+   ],
+   "source": [
+    "d['x']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 132,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d.get('x')    # if 'x' is a key in d, then return d['x'] ... if not, we get None back"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 133,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 133,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.get('x', 0)  # if 'x' is a key in d, then return d['x'] ... if not, we get None back"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 134,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "100"
+      ]
+     },
+     "execution_count": 134,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.setdefault('x', 100)   # if 'x' is not in d, then add {'x':100}, if so, then we ignore it (and get the current value)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 135,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "100"
+      ]
+     },
+     "execution_count": 135,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.setdefault('x', 10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 136,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': None, 'b': None, 'c': None, 'd': None}"
+      ]
+     },
+     "execution_count": 136,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# what if I want to create a new dict, with known keys and None values\n",
+    "\n",
+    "dict.fromkeys('abcd')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 137,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'abcd': None}"
+      ]
+     },
+     "execution_count": 137,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dict.fromkeys(['abcd'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 138,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{10: None, 20: None, 30: None}"
+      ]
+     },
+     "execution_count": 138,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dict.fromkeys((10, 20, 30))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 139,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': None, ' ': None, 'b': None, 'c': None}"
+      ]
+     },
+     "execution_count": 139,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dict.fromkeys('a b c')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 140,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d = dict.fromkeys('abc', 5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 141,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': 5, 'b': 5, 'c': 5}"
+      ]
+     },
+     "execution_count": 141,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 142,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d = dict.fromkeys('abc', [])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 143,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': [], 'b': [], 'c': []}"
+      ]
+     },
+     "execution_count": 143,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 144,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d['a'].append(10)\n",
+    "d['b'].append(20)\n",
+    "d['c'].append(30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 145,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': [10, 20, 30], 'b': [10, 20, 30], 'c': [10, 20, 30]}"
+      ]
+     },
+     "execution_count": 145,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 147,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': [], 'b': [], 'c': []}"
+      ]
+     },
+     "execution_count": 147,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# the best way to do this -- a dict comprehension\n",
+    "{key: []\n",
+    " for key in 'abc'}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 148,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 148,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d = {'a':10, 'b':20, 'c':30, 'd':40}\n",
+    "\n",
+    "# does a key exist in d?\n",
+    "'b' in d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 150,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 150,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# many people do this\n",
+    "'b' in d.keys()   # never do this! very, very slow compared with \"in d\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 152,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "dict_keys(['a', 'b', 'c', 'd'])"
+      ]
+     },
+     "execution_count": 152,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.keys()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 151,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "dict_values([10, 20, 30, 40])"
+      ]
+     },
+     "execution_count": 151,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.values()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 153,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': 10, 'b': 20, 'c': 30, 'd': 40}"
+      ]
+     },
+     "execution_count": 153,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 155,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': 10, 'b': 20, 'c': 100, 'd': 200, 'e': 300}"
+      ]
+     },
+     "execution_count": 155,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d2 = {'c':100, 'd':200, 'e':300}\n",
+    "\n",
+    "# starting with 3.9, we can say:\n",
+    "d | d2      # returns a new dict with all values from d and d2 (if they have the same key, d2 wins)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 156,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': 10, 'b': 20, 'c': 100, 'd': 200, 'e': 300}"
+      ]
+     },
+     "execution_count": 156,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# want to replace d? Use |=\n",
+    "\n",
+    "d |= d2\n",
+    "d"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Exercise: `dictdiff`\n",
+    "\n",
+    "1. Write a function, `dictdiff`, that takes two dicts as arguments.\n",
+    "2. The output will be a dict that describes the differences between the two arguments.\n",
+    "    - If the arguments have the same key/value pair, we ignore it in the output.\n",
+    "    - If the arguments have the same key, but different values, then the output dict will have that key, plus a list of [arg1_val, arg2_val].\n",
+    "    - If one has a key, but not both, then the output dict will contain that key, the value for the arg that exists, and `None` where it doesn't exist.\n",
+    "    \n",
+    "Examples:\n",
+    "\n",
+    "```python\n",
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "d2 = {'a':10, 'b':20, 'c':40}\n",
+    "\n",
+    "dictdiff(d1, d2)  # {'c':[30, 40]}\n",
+    "\n",
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "d2 = {'a':10, 'b':20, 'd':40}\n",
+    "\n",
+    "dictdiff(d1, d2)  # {'d': [None, 40], 'c': [30, None]}\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 159,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{}\n"
+     ]
+    }
+   ],
+   "source": [
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "\n",
+    "def dictdiff(first, second):\n",
+    "    output = {}\n",
+    "    \n",
+    "    for one_key in first | second:\n",
+    "        v1 = first.get(one_key)\n",
+    "        v2 = second.get(one_key)\n",
+    "        \n",
+    "        if v1 != v2:\n",
+    "            output[one_key] = [v1, v2]        \n",
+    "    \n",
+    "    return output\n",
+    "\n",
+    "print(dictdiff(d1, d1))  # {}\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 160,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'c': [30, 40]}\n"
+     ]
+    }
+   ],
+   "source": [
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "d2 = {'a':10, 'b':20, 'c':40}\n",
+    "\n",
+    "print(dictdiff(d1, d2))  # {'c':[30, 40]}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 163,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'d': [None, 40], 'c': [30, None]}\n"
+     ]
+    }
+   ],
+   "source": [
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "d2 = {'a':10, 'b':20, 'd':40}\n",
+    "\n",
+    "print(dictdiff(d1, d2))  # {'d': [None, 40], 'c': [30, None]}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 162,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{}\n"
+     ]
+    }
+   ],
+   "source": [
+    "# In pre-3.9 Python\n",
+    "\n",
+    "\n",
+    "d1 = {'a':10, 'b':20, 'c':30}\n",
+    "\n",
+    "def dictdiff(first, second):\n",
+    "    output = {}\n",
+    "    \n",
+    "    for one_key in set(first.keys() + second.keys()):\n",
+    "        v1 = first.get(one_key)\n",
+    "        v2 = second.get(one_key)\n",
+    "        \n",
+    "        if v1 != v2:\n",
+    "            output[one_key] = [v1, v2]        \n",
+    "    \n",
+    "    return output\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 164,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'a': 10, 'b': 20, 'c': 100, 'd': 200, 'e': 300}"
+      ]
+     },
+     "execution_count": 164,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 167,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "ename": "AttributeError",
+     "evalue": "'dict' object has no attribute 'has_key'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/rr/0mnyyv811fs5vyp22gf4fxk00000gn/T/ipykernel_80166/1063672824.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0md\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mhas_key\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m: 'dict' object has no attribute 'has_key'"
+     ]
+    }
+   ],
+   "source": [
+    "d.has_key"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# `defaultdict`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 169,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "\n",
+    "d = defaultdict(int)\n",
+    "\n",
+    "d['a'] += 10\n",
+    "d['b'] += 20"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 170,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "defaultdict(int, {'a': 10, 'b': 20})"
+      ]
+     },
+     "execution_count": 170,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 171,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "5"
+      ]
+     },
+     "execution_count": 171,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def return_five():\n",
+    "    return 5\n",
+    "\n",
+    "d = defaultdict(return_five)\n",
+    "\n",
+    "d['a']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 172,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "5"
+      ]
+     },
+     "execution_count": 172,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d['b']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 173,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "5"
+      ]
+     },
+     "execution_count": 173,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d['asdfsafa']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 174,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d = defaultdict(list)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 175,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d['a'].append(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 176,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d['b'].append(20)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 177,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "defaultdict(list, {'a': [10, 100], 'b': [20], 'c': [300]})"
+      ]
+     },
+     "execution_count": 177,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d['a'].append(100)\n",
+    "d['c'].append(300)\n",
+    "\n",
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 181,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 182,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1652794734.1580632"
+      ]
+     },
+     "execution_count": 182,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "time.time()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 183,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1652794749.903662"
+      ]
+     },
+     "execution_count": 183,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d = defaultdict(time.time)\n",
+    "\n",
+    "d['a']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 184,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1652794751.143201"
+      ]
+     },
+     "execution_count": 184,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d['b']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 185,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1652794752.022476"
+      ]
+     },
+     "execution_count": 185,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d['c']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 186,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from collections import Counter"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 187,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Counter({'a': 10, 'b': 20})"
+      ]
+     },
+     "execution_count": 187,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "c = Counter()\n",
+    "\n",
+    "c['a'] += 10\n",
+    "c['b'] += 20\n",
+    "\n",
+    "c"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 188,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# the real use: create a new Counter based on something iterable\n",
+    "\n",
+    "c = Counter('abcabcaaaaaabaaabbbaaaa')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 189,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Counter({'a': 15, 'b': 6, 'c': 2})"
+      ]
+     },
+     "execution_count": 189,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "c"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 190,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Counter({10: 1, 20: 3, 30: 3, 40: 3, 50: 1})"
+      ]
+     },
+     "execution_count": 190,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "c = Counter([10, 20, 30, 40, 20, 30, 40, 20, 30, 40, 50])\n",
+    "c"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 191,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[(20, 3), (30, 3), (40, 3), (10, 1), (50, 1)]"
+      ]
+     },
+     "execution_count": 191,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# which is the most common?\n",
+    "c.most_common()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 192,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "10: 1\n",
+      "20: 3\n",
+      "30: 3\n",
+      "40: 3\n",
+      "50: 1\n"
+     ]
+    }
+   ],
+   "source": [
+    "# everything that a dict can do, a counter can do\n",
+    "\n",
+    "for key, value in c.items():\n",
+    "    print(f'{key}: {value}')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 193,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "10: x\n",
+      "20: xxx\n",
+      "30: xxx\n",
+      "40: xxx\n",
+      "50: x\n"
+     ]
+    }
+   ],
+   "source": [
+    "# let's make a histogram\n",
+    "\n",
+    "for key, value in c.items():\n",
+    "    print(f'{key}: {value * \"x\"}')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 194,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "OrderedDict([('a', 10), ('b', 20), ('c', 30)])"
+      ]
+     },
+     "execution_count": 194,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from collections import OrderedDict\n",
+    "\n",
+    "d = OrderedDict()\n",
+    "d['a'] = 10\n",
+    "d['b'] = 20\n",
+    "d['c'] = 30\n",
+    "\n",
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 195,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "20"
+      ]
+     },
+     "execution_count": 195,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d.pop('b')  # remove 'b' and return the value"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 196,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d['b'] = 20"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 197,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "OrderedDict([('a', 10), ('c', 30), ('b', 20)])"
+      ]
+     },
+     "execution_count": 197,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "d"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Next time\n",
+    "\n",
+    "Functions!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
