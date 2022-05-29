@@ -10,4 +10,6 @@ def menu(*args):
 
 if __name__ == '__main__':
     print('Example menu!')
+    user_choice = menu('a', 'b', 'c', 'd')
+    print(f'You chose {user_choice}!')
     
