@@ -1,3 +1,4 @@
+# __name__ is a string, the name of the current file
 print(f'Hello from {__name__}!')
 
 x = 100
