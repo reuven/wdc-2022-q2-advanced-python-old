@@ -7,3 +7,4 @@ from . import b
 print('Hello from mypackage!')
 
 print(a.hello('world'))
+print(b.hello('world'))
