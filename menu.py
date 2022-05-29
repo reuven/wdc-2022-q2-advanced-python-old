@@ -1,7 +1,8 @@
 def menu(*args):
-    user_choice = input(f'Choose from: {args}').strip()
+    while True:
+        user_choice = input(f'Choose from: {args}').strip()
 
-    if user_choice in args:
-        return user_choice
+        if user_choice in args:
+            return user_choice
 
-    print(f'{user_choice} is not valid; try again')
+        print(f'{user_choice} is not valid; try again')
