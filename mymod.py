@@ -1,4 +1,6 @@
 # __name__ is a string, the name of the current file
+
+id __name__ == '__main__':
 print(f'Hello from {__name__}!')
 
 x = 100
@@ -10,4 +12,5 @@ def hello(name):
     return f'Hello, {name}!'
 
 
-print(f'Goodbye from {__name__}!')
+id __name__ == '__main__':
+    print(f'Goodbye from {__name__}!')
